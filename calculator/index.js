@@ -24,6 +24,8 @@ const actions = [
 const previous = document.getElementById("previous");
 const current = document.getElementById("current");
 
+
+// Definirea clasei 
 class Calculator {
     constructor(previous, current) {
         this.previous = previous;
@@ -96,8 +98,12 @@ class Calculator {
     }
 }
 
+
+// Declararea si initializarea instantei clasei Calculator
 const calculator = new Calculator(previous, current);
 
+
+// Atribuirea functiei corespunzatoare fiecarui buton
 actions.forEach(action => {
     action.addEventListener("click", () => {
         calculator.doAction(action.innerHTML);
