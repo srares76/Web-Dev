@@ -1,7 +1,8 @@
-// Selectia butoanelor calculatorului
+// Constante
 const DIGITS_NUMBER = 10;
 const DECIMALS = 6;
 
+// Selectia butoanelor calculatorului
 const numbers = [];
 for (var i = 0; i < DIGITS_NUMBER; i++) {
     numbers[i] = document.getElementById(`${i}`);
