@@ -22,71 +22,88 @@ const actions = [
 
 const previous = document.getElementById("previous");
 const current = document.getElementById("current");
-var operation = "";
 
 // Definirea clasei
 class Calculator {
+
+    previous = "";
+    current = "";
+    operation = "";
+
     constructor(previous, current) {
         this.previous = previous;
         this.current = current;
-        operation = undefined;
+        this.operation = undefined;
     }
 
     sendNumber(number) {
         const request = new XMLHttpRequest();
+        var self = this;
         request.onload = function() {
             try {
-                current.innerHTML = this.responseText;
+                self.current.innerHTML = this.responseText;
             } catch {
                 console.log("Error: " + request.status);
             }
         }
 
-        const url = "./phpfiles/index.php?current=" + current.innerHTML
-        + "&previous=" + previous.innerHTML
-        + "&number=" + number;
-        request.open("GET", url);
+        const urlBase = "http://127.0.0.1:8080/phpfiles/index.php?";
+        const usp = new URLSearchParams();
+        usp.set("current", self.current.innerHTML);
+        usp.set("previous", self.previous.innerHTML);
+        usp.set("number", number);
+
+        request.open("GET", urlBase + usp.toString());
         request.send();
     }
 
     sendAction(action) {
         const request = new XMLHttpRequest();
+        var self = this;
         request.onload = function() {
             try {
                 var responseJSON = JSON.parse(this.responseText);
-                current.innerHTML = responseJSON.current;
-                previous.innerHTML = responseJSON.previous;
-                operation = responseJSON.operation;
+                self.current.innerHTML = responseJSON.current;
+                self.previous.innerHTML = responseJSON.previous;
+                self.operation = responseJSON.operation;
             } catch {
                 console.log("Error: " + request.status);
             }
         }
 
-        const url = "./phpfiles/index.php?current=" + current.innerHTML
-        + "&previous=" + previous.innerHTML
-        + "&operation=" + operation
-        + "&action=" + action;
-        request.open("GET", url);
+        const urlBase = "http://127.0.0.1:8080/phpfiles/index.php?";
+
+        const usp = new URLSearchParams();
+        usp.set("current", self.current.innerHTML);
+        usp.set("previous", self.previous.innerHTML);
+        usp.set("operation", self.operation);
+        usp.set("action", action);
+
+        request.open("GET", urlBase + usp.toString());
         request.send();
     }
 
     sendOperation(calcOperation) {
         const request = new XMLHttpRequest();
+        var self = this;
         request.onload = function() {
             try {
                 var responseJSON = JSON.parse(this.responseText);
-                current.innerHTML = responseJSON.current;
-                previous.innerHTML = responseJSON.previous;
-                operation = responseJSON.operation;
+                self.current.innerHTML = responseJSON.current;
+                self.previous.innerHTML = responseJSON.previous;
+                self.operation = responseJSON.operation;
             } catch {
                 console.log("Error: " + request.status);
             }
         }
 
-        const url = "./phpfiles/index.php?current=" + current.innerHTML
-        + "&previous=" + previous.innerHTML
-        + "&operation=" + calcOperation;
-        request.open("GET", url);
+        const urlBase = "http://127.0.0.1:8080/phpfiles/index.php?";
+        const usp = new URLSearchParams();
+        usp.set("current", self.current.innerHTML);
+        usp.set("previous", self.previous.innerHTML);
+        usp.set("operation", calcOperation);
+
+        request.open("GET", urlBase + usp.toString());
         request.send();
     }
 }
