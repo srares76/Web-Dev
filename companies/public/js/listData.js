@@ -36,10 +36,19 @@ function deleteUser(email) {
 }
 
 async function fetchData(type) {
-    const url = "http://127.0.0.1/listdata?type=";
+    var url = "http://127.0.0.1/";
+    if (type === 'company') {
+        url += 'fetchcompanies';
+    } else if (type === 'user') {
+        url += 'fetchusers';
+    } else {
+        return;
+    }
+    
     try {
-        let res = await fetch(url + type);
+        let res = await fetch(url);
         return await res.json();
+
     } catch (error) {
         console.log(error);
     }
@@ -54,15 +63,29 @@ async function showForm(type) {
             // lists the companies
             const li = document.createElement('li');
             li.innerHTML = result.name + ' --> ' + result.number_of_users;
+            li.classList.add('mt-2');
 
             // Creates the delete buttons
             const deleteButton = document.createElement('button');
             deleteButton.innerHTML = 'Delete ' + result.name;
             deleteButton.type = 'button';
 
+            // Adds styling to the delete button
+            const deleteButtonClasses = [
+                'px-2',
+                'py-1',
+                'ml-3',
+                'bg-gray-100',
+                'rounded-xl',
+                'hover:bg-red-100'
+            ];
+
+            deleteButtonClasses.forEach(function(css_class) {
+                deleteButton.classList.add(css_class);
+            });
+
             deleteButton.addEventListener('click', function() {
                 deleteCompany(result.name);
-                location.reload();
             });
 
             // Hierarchy
@@ -74,15 +97,29 @@ async function showForm(type) {
             // lists the companies
             const li = document.createElement('li');
             li.innerHTML = result.name + ', ' + result.email + ' --> ' + result.company;
+            li.classList.add('mt-2');
 
             // Creates the delete buttons
             const deleteButton = document.createElement('button');
             deleteButton.innerHTML = 'Delete ' + result.name;
             deleteButton.type = 'button';
 
+            // Adds styling to the delete button
+            const deleteButtonClasses = [
+                'px-2',
+                'py-1',
+                'ml-3',
+                'bg-gray-100',
+                'rounded-xl',
+                'hover:bg-red-100'
+            ];
+
+            deleteButtonClasses.forEach(function(css_class) {
+                deleteButton.classList.add(css_class);
+            });
+
             deleteButton.addEventListener('click', function() {
                 deleteUser(result.email);
-                location.reload();
             });
 
             li.appendChild(deleteButton);

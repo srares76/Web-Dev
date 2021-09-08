@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'company',
         'password',
     ];
 
@@ -44,7 +45,7 @@ class User extends Authenticatable
     ];
 
     public function getUsersFromCompany($company) {
-        $users = DB::table('users')->where('company', '=', $company)->get();
+        $users = DB::table('users')->where('company', $company)->get();
         return $users;
     }
 
@@ -64,6 +65,7 @@ class User extends Authenticatable
         // Gets the current number of users the company has
         $number_of_users = DB::table('companies')->select('number_of_users')->where('name', $company)->get();
         $number_of_users = $number_of_users[0]->number_of_users;
+        echo $number_of_users;
         
         // Deletes the user from the users table
         DB::table('users')->where('email', $user)->delete();

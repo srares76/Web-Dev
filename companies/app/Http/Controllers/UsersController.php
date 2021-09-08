@@ -3,18 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules;
 
 class UsersController extends Controller {
     public function getAllUsers() {
         $model = new user();
         $users = $model->orderBy('company')->get();
 
-        return json_encode($users);
+        return response()->json($users);
     }
 
-    public function index() {
+    public function getUsersFromCompany() {
         if (isset($_GET['company'])) {
             $company = $_GET['company'];
         }
@@ -22,7 +28,7 @@ class UsersController extends Controller {
         $model = new User();
         $users = $model->getusersFromCompany($company);
 
-        echo json_encode($users);
+        return response()->json($users);
     }
 
     public function addUser() {
@@ -30,13 +36,12 @@ class UsersController extends Controller {
 
         $name = request('user-name');
         $email = request('user-email');
-        $password = request('user-password');
+        // $password = request('user-password');
+        $password = Hash::make(request('password'));
         $company = request('user-company');
 
         if (is_null($company)) {
             $company = "None";
-        } else {
-            $company = request('user-company');
         }
 
         $userModel->email = $email;
@@ -44,7 +49,6 @@ class UsersController extends Controller {
             return view('/addData', ['error' => 'Email is already taken']);
             return;
         }
-
 
         $userModel->name = $name;
         $userModel->password = $password;
@@ -58,6 +62,26 @@ class UsersController extends Controller {
         return view('/adminMainPage');
     }
 
+    public function addUserAuth() {
+        $userModel = new User();
+        $company = request('user-company');
+
+        $user = User::create([
+            'name' => request('user-name'),
+            'email' => request('user-email'),
+            'company' => request('user-company'),
+            'password' => Hash::make(request('password')),
+        ]);
+
+        event(new Registered($user));
+
+        if ($company !== "None") {
+            $userModel->incrementUsers($company);
+        }
+
+        return redirect(RouteServiceProvider::HOME);
+    }
+
     public function deleteUser() {
         if (isset($_GET['user'])) {
             $user = $_GET['user'];
@@ -66,5 +90,4 @@ class UsersController extends Controller {
         $model = new User();
         $model->deleteUser($user);
     }
-
 }
